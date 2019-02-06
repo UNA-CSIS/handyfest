@@ -1,0 +1,131 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: Arial;
+    color: white;
+    font-size: 36px;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 300px; 
+    margin: auto;
+    justify-content: center;
+}
+
+.search {
+    padding: 1px 0px 1px 0px;
+    width: 268px;
+    height: 49px;
+    font-family: "Franklin Gothic Bold", "Franklin Gothic";
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center; 
+    background-color: #cccccc; 
+}
+
+.search::placeholder{
+    color: rgb(255, 255, 255);
+    opacity: 1;
+}
+
+.box {
+    cursor: pointer;
+    width: 104px;
+    height: 89px;
+    margin: 8px;
+    border-radius: 5%;
+    text-align: center;
+    padding-top: 20px;
+}
+
+.jazz {
+    background-color: #660033;
+}
+
+.rock {
+    background-color: #f07a53;
+}
+
+.blues {
+    background-color: rgba(51, 204, 51, .4);
+}
+
+.food{
+    background-color: #ffde6f9d;
+}
+
+.art_festivities {
+    font-weight: 700;
+    font-size: 20px;
+    background-color: #ffcc99;
+}
+
+.all_events {
+    font-weight: 400;
+    font-size: 28px;
+    padding-top: 10px;
+    background-color: #006666ff;
+}
+
+.misc {
+    background-color: rgba(200, 0, 0, .6);
+}
+
+.view_schedule {
+    font-weight: 700;
+    font-style: normal;
+    font-size: 20px;
+    background-color: #00264def;
+}
+
+.box:hover {
+    animation: bounce 1s;
+}
+
+.back_button {
+    font-weight: 400;
+    font-size: 28px;
+    padding-top: 10px;
+    background-color: #006666ff;
+}
+
+table {
+    color: black;
+}
+
+@media only screen and (min-width: 600px){
+    /* For tablets */
+    .container {width: 500px}
+    .search {width: 400px}
+    
+}
+
+@keyframes bounce {
+	0%, 20%, 60%, 100% {
+		-webkit-transform: translateY(0);
+		transform: translateY(0);
+	}
+
+	40% {
+		-webkit-transform: translateY(-20px);
+		transform: translateY(-20px);
+	}
+
+	80% {
+		-webkit-transform: translateY(-10px);
+		transform: translateY(-10px);
+	}
+}
+
+
+
+
+

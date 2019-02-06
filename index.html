@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>W.C. Handy Music Festival </title>
+        <link rel="stylesheet" type="text/css" href="stylesheet.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                $("#events").hide();
+                $(".back_button").hide();
+                $("#events").load("event_schedule.txt");
+                $("#eventbox").click(function(){
+                    $(".back_button").show();
+                    $("#events").show();
+                    $(".container").hide();
+                });
+                $("#jazzbox").click(function(){
+                    $(".blues-event").hide();
+                    $(".rock-event").hide();
+                    $(".art-event").hide();
+                    $(".misc-event").hide();
+                    $(".back_button").show();
+                    $("#events").show();
+                    $(".container").hide();
+                });
+                $("#rockbox").click(function(){
+                    $(".blues-event").hide();
+                    $(".jazz-event").hide();
+                    $(".art-event").hide();
+                    $(".misc-event").hide();
+                    $(".back_button").show();
+                    $("#events").show();
+                    $(".container").hide();
+                });
+                $("#bluesbox").click(function(){
+                    $(".jazz-event").hide();
+                    $(".rock-event").hide();
+                    $(".art-event").hide();
+                    $(".misc-event").hide();
+                    $(".back_button").show();
+                    $("#events").show();
+                    $(".container").hide();
+                });
+                $(".back_button").click(function(){
+                    $("#events").hide();
+                    $(".back_button").hide();
+                    $(".blues-event").show();
+                    $(".rock-event").show();
+                    $(".art-event").show();
+                    $(".jazz-event").show();
+                    $(".misc-event").show();
+                    $(".container").show();
+                });
+            });
+        </script>
+    </head>
+    
+    <body>
+        <div class="container">
+            <div>
+                <input class="search" type="text" placeholder="Search Festival">
+            </div>
+            
+            <div class="jazz box" id="jazzbox">
+                Jazz   
+            </div>
+            
+            <div class="blues box" id="bluesbox">
+                Blues
+            </div>
+            
+            <div class="rock box" id="rockbox">
+                Rock
+            </div>          
+            
+            <div class="food box">
+                Food
+            </div>
+                     
+            <div class="art_festivities box">
+                Art Festivities
+            </div>            
+            
+            <div class="misc box">
+                Misc
+            </div>
+            
+            <div class="all_events box" id="eventbox">
+                All Events
+            </div>
+            
+            <div class="view_schedule box">
+                View Schedule
+            </div>
+            
+        </div>
+        <div class="back_button">Back</div>
+        <div id="events">
+            
+        </div>
+    </body>
+
+</html>
