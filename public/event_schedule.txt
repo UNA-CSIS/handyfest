@@ -1,0 +1,27 @@
+<table style="width:100%">
+  <tr id="headers">
+    <th>Event name</th>
+    <th>Location</th> 
+    <th>Date</th>
+  </tr>
+  <tr class="blues-event">
+    <td>Sweet Cornet on the Cob</td>
+    <td>Rivertown Covfefe</td> 
+    <td>21 June, 2019</td>
+  </tr>
+  <tr class="blues-event">
+    <td>St. Louis Greens</td>
+    <td>McFarland Park</td> 
+    <td>22 June, 2019</td>
+  </tr>
+  <tr class="jazz-event">
+    <td>Jazz with Pizazz</td>
+    <td>Marco's Pizzaz</td> 
+    <td>22 June, 2019</td>
+  </tr>
+  <tr class="rock-event">
+    <td>Rock the Rocks</td>
+    <td>OTR</td>
+    <td>23 June, 2019</td>
+  </tr>
+</table>
