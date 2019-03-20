@@ -1,6 +1,8 @@
+var http = require('http');
+var path = require('path');
 var express = require('express');
+
 var app = express();
+app.use(express.static(path.join(__dirname, '/public')));
 
-app.use('/static', express.static('public'));
-
-app.listen(3000);
+http.createServer(app).listen(8080);

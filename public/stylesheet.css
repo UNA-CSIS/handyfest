@@ -97,8 +97,43 @@ body{
     background-color: #006666ff;
 }
 
+.blues_event {
+    
+    width: 500;
+}
+
+.eventinfo {
+    width:400;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 12px;
+    color: black;
+    background-color: #ffffff;
+    padding-bottom: 20px;
+}
+
+.add-button {
+    background-color: #111177;
+}
+
+.add-button {
+    background-color: #111177;
+}
+
+.info-button {
+    background-color: #bb2211;
+}
+
+.play-button {
+    background-color: #cc5511;
+}
+
 table {
     color: black;
+}
+
+u {
+    text-decoration: underline;
 }
 
 @media only screen and (min-width: 600px){
