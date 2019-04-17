@@ -1,0 +1,239 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: Arial;
+    color: white;
+    font-size: 36px;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.main_container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 300px;
+    margin: auto;
+    justify-content: center;
+}
+
+.search {
+    padding: 1px 0px 1px 0px;
+    width: 268px;
+    height: 49px;
+    font-family: "Franklin Gothic Bold", "Franklin Gothic";
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center; 
+    background-color: #cccccc; 
+}
+
+.search::placeholder{
+    color: rgb(255, 255, 255);
+    opacity: 1;
+}
+
+.box {
+    cursor: pointer;
+    width: 104px;
+    height: 89px;
+    margin: 8px;
+    border-radius: 5%;
+    text-align: center;
+    padding-top: 20px;
+}
+
+.jazz {
+    background-color: #660033;
+}
+
+.rock {
+    background-color: #f07a53;
+}
+
+.blues {
+    background-color: rgba(51, 204, 51, .4);
+}
+
+.food{
+    background-color: #ffde6f9d;
+}
+
+.art_festivities {
+    font-weight: 500;
+    font-size: 20px;
+    background-color: #ffcc99;
+}
+
+.all_events {
+    font-weight: 500;
+    font-size: 28px;
+    padding-top: 10px;
+    background-color: #006666ff;
+}
+
+.misc {
+    background-color: rgba(200, 0, 0, .6);
+}
+
+.view_schedule {
+    font-weight: 500;
+    font-style: normal;
+    font-size: 20px;
+    background-color: #00264def;
+}
+
+
+.events_container {
+    font-family: 'ArialMT', 'Arial';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 13px;
+    color: #333333;
+}
+
+.when, .where, .what {
+    font-family: 'Arial Bold', 'Arial';
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.button {
+    display: inline-block;
+    cursor: pointer;
+    font-size: 10px;
+    color: white;
+    margin: 8px;
+    border-radius: 9%;
+    text-align: center;
+}
+
+.big_button {
+    width: 94px;
+    height: 34px;
+    padding-top: 10px;
+}
+
+.small_button {
+    width: 57px;
+    height: 29px;
+    padding-top: 8px;
+}
+
+.addToSchdule {
+    background-color: #00264def;
+}
+
+.moreInfo {
+    background-color: rgba(230, 0, 0, .7);
+}
+
+.playArtist {
+    background-color:  rgba(255, 163, 26, .9);
+    border: solid 1px rgb(179, 209, 255);
+}
+
+.back {
+    display: block;
+    margin: 20px;
+    width: 141px;
+    height: 41px;
+    font-family: 'ArialMT', 'Arial';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 13px;
+    background-color: #00264def;
+    padding-top: 13px;
+}
+
+.box:hover {
+    animation: bounce 1s;
+}
+
+.button:hover {
+    animation: bounce 1.5s;
+}
+
+.ui-widget {
+    font-size: 18px;
+}
+
+@media only screen and (min-width: 900px){
+    /* For tablets */
+    .main_container {width: 800px}
+    .search {width: 600px}
+    .box {
+        width: 304px;
+        height: 240px;
+        padding-top: 65px;
+        font-size: 80px;
+    }
+    
+    .art_festivities {
+        font-size: 55px;
+        padding-top: 35px;
+    }
+    
+    .all_events {
+        font-size: 70px;
+        padding-top: 30px;
+    }
+    
+    .view_schedule {
+        font-size: 60px;
+        padding-top: 35px;
+    }
+    
+}
+
+@media only screen and (min-width: 1000px){
+    /* For monitors, Tvs */
+    .main_container {width: 750px}
+    .search {width: 500px}
+    .box {
+        width: 240px;
+        height: 160px;
+        padding-top: 50px;
+        font-size: 50px;
+    }
+    
+    .art_festivities {
+        font-size: 45px;
+        padding-top: 30px;
+    }
+    
+    .all_events {
+        font-size: 55px;
+        padding-top: 15px;
+    }
+    
+    .view_schedule {
+        font-size: 45px;
+        padding-top: 25px;
+    }
+}
+
+@keyframes bounce {
+	0%, 20%, 60%, 100% {
+		-webkit-transform: translateY(0);
+		transform: translateY(0);
+	}
+
+	40% {
+		-webkit-transform: translateY(-20px);
+		transform: translateY(-20px);
+	}
+
+	80% {
+		-webkit-transform: translateY(-10px);
+		transform: translateY(-10px);
+	}
+}
+
+
+
+
+
