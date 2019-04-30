@@ -1,9 +1,31 @@
 const express = require('express');
+const readXlsxFile = require('read-excel-file/node');
+const bcrypt = require('bcrypt');
 const router = express.Router();
+const saltRounds = 10;
 
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb+srv://Abdullah:12345@cluster0-b4mdv.mongodb.net/handy";
 
+const patt = /^([1-zA-Z0-1@.$]{8,20})$/;
+
+router.get('/load', (req, res, next) => {
+    
+    if(req.session.admin_username){
+        
+        let temp = "A" + req.session.admin_username;
+        
+        res.json(temp);
+        
+    } else if (req.session.username) {
+        
+        let temp = "U" + req.session.username;
+        
+        res.json(temp);
+    } else {
+        res.send("false"); 
+    }
+});
 
 router.get('/insert', (req, res, next) => {
 
@@ -43,9 +65,10 @@ router.get('/insert', (req, res, next) => {
         dbo.collection("events").insertMany(myobj, function(err, res) {
         
             if (err) throw err;
-            console.log("Number of documents inserted: " + res.insertedCount);
             db.close();
         });
+        
+        res.send("...");
     });
 });
 
@@ -58,7 +81,7 @@ router.get('/rock', (req, res, next) => {
         
         var dbo = db.db("handy");
         
-        dbo.collection("events").find({"type": "Rock" }, { projection: { _id: 0, type:0} }).toArray(function(err, result) {
+        dbo.collection("events").find({"type": "Rock" }, { projection: { _id: 0} }).toArray(function(err, result) {
     
             if (err) throw err;
             
@@ -77,7 +100,7 @@ router.get('/jazz', (req, res, next) => {
         
         var dbo = db.db("handy");
         
-        dbo.collection("events").find({"type": "Jazz" }, { projection: { _id: 0, type:0} }).toArray(function(err, result) {
+        dbo.collection("events").find({"type": "Jazz" }, { projection: { _id: 0} }).toArray(function(err, result) {
     
             if (err) throw err;
       
@@ -95,7 +118,7 @@ router.get('/blues', (req, res, next) => {
         
         var dbo = db.db("handy");
         
-        dbo.collection("events").find({"type": "Blues" }, { projection: { _id: 0, type:0} }).toArray(function(err, result) {
+        dbo.collection("events").find({"type": "Blues" }, { projection: { _id: 0} }).toArray(function(err, result) {
     
             if (err) throw err;
 
@@ -113,7 +136,7 @@ router.get('/food', (req, res, next) => {
         
         var dbo = db.db("handy");
         
-        dbo.collection("events").find({"type": "Food" }, { projection: { _id: 0, type:0} }).toArray(function(err, result) {
+        dbo.collection("events").find({"type": "Food" }, { projection: { _id: 0} }).toArray(function(err, result) {
     
             if (err) throw err;
 
@@ -131,7 +154,7 @@ router.get('/art_festivities', (req, res, next) => {
         
         var dbo = db.db("handy");
         
-        dbo.collection("events").find({"type": "Art Festivities" }, { projection: { _id: 0, type:0} }).toArray(function(err, result) {
+        dbo.collection("events").find({"type": "Art Festivities" }, { projection: { _id: 0} }).toArray(function(err, result) {
     
             if (err) throw err;
 
@@ -150,14 +173,10 @@ router.get('/misc', (req, res, next) => {
         
         var dbo = db.db("handy");
         
-        dbo.collection("events").find({"type": "Misc" }, { projection: { _id: 0, type:0} }).toArray(function(err, result) {
+        dbo.collection("events").find({"type": "Misc" }, { projection: { _id: 0} }).toArray(function(err, result) {
     
             if (err) throw err;
-      
-//            res.send(result);
-
-//            res.writeHead(200, { 'Content-Type': 'application/json' }); 
-//            res.end(JSON.stringify(result));
+            
             res.json(result);
             db.close();
         
@@ -173,7 +192,53 @@ router.get('/all_events', (req, res, next) => {
         
         var dbo = db.db("handy");
         
-        dbo.collection("events").find({}, { projection: { _id: 0, type:0} }).toArray(function(err, result) {
+        dbo.collection("events").find({}, { projection: { _id: 0} }).toArray(function(err, result) {
+    
+            if (err) throw err;
+
+            res.json(result);
+            db.close();
+        
+        });
+    }); 
+});
+
+router.get('/view_schedule', (req, res, next) => {
+    
+    
+    if(!req.session.username || !req.session.password){
+        res.json("user did not sign in");
+        return;
+    }
+    
+    MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
+        if (err) throw err;
+        
+        var dbo = db.db("handy");
+        
+        var name = req.session.username;
+        var pass = req.session.password;
+        
+        dbo.collection("users").find({"username": name, "password": pass}, { projection: { _id: 0, userEvents: 1} }).toArray(function(err, result) {
+    
+            if (err) throw err;
+
+            res.json(result);
+            db.close();
+        
+        });
+    }); 
+});
+
+
+router.get('/admin/delete_page', (req, res, next) => {
+    
+    MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
+        if (err) throw err;
+        
+        var dbo = db.db("handy");
+        
+        dbo.collection("events").find({}, { projection: { _id: 0} }).toArray(function(err, result) {
     
             if (err) throw err;
 
@@ -221,6 +286,427 @@ router.get('/search/:name/:type', (req, res, next) => {
         
         });
     });
+});
+
+router.post('/admin/signin', (req, res, next) => {
+    
+    if(req.session.username){
+        res.send("You are signed in as a user");
+        return;
+    }
+    
+    MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
+        if (err) throw err;
+        
+        var dbo = db.db("handy");
+        var name = `${req.body.username}`;
+        var pass = `${req.body.password}`;
+        
+        if (!patt.test(pass)){
+            
+            res.send("Passwords are not from the allowed chars")
+
+            return;
+        }
+        
+        dbo.collection("admin").find({"username": name }, { projection: { _id: 0} }).toArray(function(err, result) {
+    
+            if (err) throw err;            
+
+            if(result.length > 0){
+                
+                var hash = result[0].password;
+                
+                bcrypt.compare(pass, hash, function(err, check) {
+                    
+                    if (err) throw err;
+                    
+                    if(check){
+                        req.session.admin_username = result[0].username;
+                        req.session.admin_password = result[0].password;
+                        
+                        db.close();
+                        return res.send("true");
+                    } else {
+                        db.close();
+                        return res.send("wrong password");
+                    }
+
+                });
+                
+            } else {
+                
+                res.send("nothing found");
+                db.close();
+                return;
+            }
+        });
+    });
+});
+
+router.post('/admin/insert', (req, res, next) => {
+    
+    if(!req.session.admin_username || !req.session.admin_password){
+        res.send("user did not sign in");
+        return;
+    }
+    
+    
+    MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
+        if (err) throw err;
+        
+        var dbo = db.db("handy");
+        var eventName = `${req.body.event_name}`;
+        var eventType = `${req.body.event_type}`;
+        var eventWhen = `${req.body.event_when}`;
+        var eventWhere = `${req.body.event_where}`;
+        var eventUrl = `${req.body.event_url}`;
+        
+        eventType = eventType.charAt(0).toUpperCase() + eventType.slice(1);
+        
+        eventUrl = eventUrl.replace("watch?v=", "embed/");
+        
+        var myObj = { name: eventName, type: eventType, when: eventWhen, where: eventWhere, youtubeUrl: eventUrl };
+        
+        dbo.collection("events").insertOne(myObj, function(err, res) {
+    
+            if (err) throw err;
+
+            db.close();
+        });
+        
+            res.send("true");
+    });
+});
+
+
+router.post('/user/signin', (req, res, next) => {
+    
+    if(req.session.admin_username){
+        res.send("You are signed in as an admin");
+        return;
+    }
+    
+    
+    MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
+        if (err) throw err;
+        
+        var dbo = db.db("handy");
+        var name = `${req.body.username}`;
+        var pass = `${req.body.password}`;
+        
+        if (!patt.test(pass)){
+            
+            res.send("Passwords are not from the allowed chars")
+
+            return;
+        }
+        
+        
+        dbo.collection("users").find({"username": name }, { projection: { _id: 0} }).toArray(function(err, result) {
+    
+            if (err) throw err;            
+
+            if(result.length > 0){
+                
+                var hash = result[0].password;
+                
+                bcrypt.compare(pass, hash, function(err, check) {
+                    
+                    if (err) throw err;
+                    
+                    if(check){
+                        req.session.username = result[0].username;
+                        req.session.password = result[0].password;
+                        
+                        db.close();
+                        return res.send("true");
+                    } else {
+                        db.close();
+                        return res.send("wrong password");
+                    }
+
+                });
+                
+            } else {
+                
+                res.send("nothing found");
+                db.close();
+                return;
+            }
+        });
+    });
+});
+
+
+router.post('/user/add_to_schedule', (req, res, next) => {
+    
+    if(!req.session.username || !req.session.password){
+        res.send("user did not sign in");
+        return;
+    }
+    
+    
+    MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
+        if (err) throw err;
+        
+        var dbo = db.db("handy");
+        var eventName = `${req.body.event_name}`;
+        var eventWhen = `${req.body.event_when}`;
+        var eventWhere = `${req.body.event_where}`;
+        var youtubeUrl = `${req.body.youtube_url}`;
+        var eventType = `${req.body.event_type}`;
+        
+        var name = req.session.username;
+        var pass = req.session.password;
+        
+        dbo.collection("users").updateOne({"username": name, "password": pass}, { $addToSet: {"userEvents": {eventName, eventWhen, eventWhere, youtubeUrl, eventType} } }, function(err, check) {
+    
+            if (err) throw err;
+
+            if(check.result.nModified > 0){
+                
+                condition = "true";
+
+                res.send(condition);
+            } else {
+                res.send("event already exists");
+            }
+            db.close();
+        
+        });
+    });
+});
+
+
+router.post('/user/remove_from_schedule', (req, res, next) => {
+    
+    if(!req.session.username || !req.session.password){
+        res.send("user did not sign in");
+        return;
+    }
+    
+    
+    MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
+        if (err) throw err;
+        
+        var dbo = db.db("handy");
+        var eventName = `${req.body.event_name}`;
+        var eventWhen = `${req.body.event_when}`;
+        var eventWhere = `${req.body.event_where}`;
+        var youtubeUrl = `${req.body.youtube_url}`;
+        var eventType = `${req.body.event_type}`;
+        
+        var name = req.session.username;
+        var pass = req.session.password;
+
+        dbo.collection("users").updateOne({"username": name, "password": pass}, { $pull: {"userEvents":  {eventName: eventName, eventWhen: eventWhen, eventWhere: eventWhere, youtubeUrl: youtubeUrl, eventType: eventType } } }, function(err, check) {
+    
+            if (err) throw err;
+
+            if(check.result.nModified > 0){
+                
+                condition = "true";
+
+                res.send(condition);
+            } else {
+                res.send("event already exists");
+            }
+            db.close();
+        
+        });
+    });
+});
+
+
+router.post('/admin/delete_event', (req, res, next) => {
+    
+    if(!req.session.admin_username || !req.session.admin_password){
+        res.send("user did not sign in");
+        return;
+    }
+    
+    
+    MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
+        if (err) throw err;
+        
+        var dbo = db.db("handy");
+        var eventName = `${req.body.event_name}`;
+        var eventWhen = `${req.body.event_when}`;
+        var eventWhere = `${req.body.event_where}`;
+        var youtubeUrl = `${req.body.youtube_url}`;
+        var eventType = `${req.body.event_type}`;
+        
+        var name = req.session.username;
+        var pass = req.session.password;
+
+        dbo.collection("events").deleteOne({name: eventName, type: eventType, when: eventWhen, where: eventWhere}, function(err, check) {
+    
+            if (err) throw err;
+
+            if(check.deletedCount > 0){
+                
+                condition = "true";
+
+                res.send(condition);
+            } else {
+                res.send("event was not deleted");
+            }
+            db.close();
+        
+        });
+    });
+});
+
+
+router.post('/user/signup', (req, res, next) => {
+    
+    if(req.session.admin_username){
+        res.send("You are signed in as an admin");
+        return;
+    }
+    
+    MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
+        if (err) throw err;
+        
+        var dbo = db.db("handy");
+        var name = `${req.body.username}`;
+        var pass = `${req.body.password}`;
+        var repeatPass = `${req.body.repeat_password}`;
+        
+    
+        if (!patt.test(pass) || !patt.test(repeatPass)){
+            
+            res.send("Passwords are not from the allowed chars");
+
+            return;
+        }
+        
+        if ((pass) !== (repeatPass)){
+            res.send("passwords do not match");
+            return; 
+        }
+
+
+        bcrypt.hash(pass, saltRounds, function(err, hash) {
+          // Store hash in your password DB.
+            pass = hash;
+            
+
+            dbo.collection("users").update({username: name}, { "$setOnInsert": {username: name, password: pass}} , {upsert:true}, function(err, result) {
+
+                if (err) throw err;
+
+                if(result.result.upserted){
+                    res.send("true");
+                } else {
+                    res.send("false");
+                }
+
+                db.close();
+            });
+        });
+    });
+});
+
+
+router.post('/upload', function(req, res) {
+  
+    let excelFile;
+    let uploadPath;
+
+    if (Object.keys(req.files).length == 0) {
+        res.send('No files were uploaded.');
+        return;
+    }
+    
+
+    excelFile = req.files.excelFile;
+    
+    excelFile.name = "events.xlsx";
+
+    uploadPath = __dirname + '/uploads/' + excelFile.name;
+
+    excelFile.mv(uploadPath, function(err) {
+        
+    
+        if (err) {
+            return res.send(err);
+        }
+
+        res.send('File uploaded to ' + uploadPath);  
+    
+    });
+});
+
+
+router.get('/read', function(req, res) {
+    
+    if(!req.session.admin_username || !req.session.admin_password){
+        res.send("user did not sign in");
+        return;
+    }
+  
+    let filePath= __dirname + '/uploads/events.xlsx';
+    
+    readXlsxFile(filePath).then((rows) => {
+        // `rows` is an array of rows
+        // each row being an array of cells.
+        
+        // order of events in the file: event_name, event_where, event_when, event_type, event_youtubeUrl
+        
+        MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
+            
+            if (err) throw err;
+        
+            var dbo = db.db("handy");
+        
+            for(i=0; i<rows.length; i++){
+
+                var eventName = "Not entered";
+                var eventWhen = "Not entered";
+                var eventWhere = "Not entered";
+                var eventUrl = null;
+                var eventType = "Not entered";
+
+                if(rows[i][0] != null){
+                    eventName = rows[i][0];
+                }
+
+                if(rows[i][1] != null){
+                    eventWhere = rows[i][1];
+                }
+
+                if(rows[i][2] != null){
+                    eventWhen = rows[i][2];
+                }
+
+                if(rows[i][3] != null){
+                    eventType = rows[i][3];
+                    eventType = eventType.charAt(0).toUpperCase() + eventType.slice(1);
+                }
+
+                if(rows[i][4] != null){
+                    eventUrl = rows[i][4];
+                    eventUrl = eventUrl.replace("watch?v=", "embed/");
+                }
+                
+                
+                dbo.collection("events").update({name: eventName, type: eventType, when: eventWhen, where: eventWhere, youtubeUrl: eventUrl}, { "$setOnInsert": {name: eventName, type: eventType, when: eventWhen, where: eventWhere, youtubeUrl: eventUrl}} , {upsert:true}, function(err, result){
+                
+                    if (err) throw err;
+
+                    db.close();
+                }); 
+                
+            } // end of for loop          
+        });
+        
+        res.send(true);
+        
+        return;
+        
+    });   
 });
 
 
