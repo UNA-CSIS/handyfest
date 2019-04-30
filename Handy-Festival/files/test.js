@@ -1,8 +1,18 @@
+/*
+This file handles the on-click events for each button on the website as well as the search bar.
+
+When a genre button is clicked or something is typed in the search bar, a GET request for a MongoDB query is
+sent to the events database. The results are retrieved as JSON objects, which are parsed, formatted, then 
+displayed to the user with HTML.
+
+The user/admin logins are handled here as well as the personal schedules for each user.
+*/
+
 let admin_username = " ";
 let user_username = " ";
 
 $(document).ready(function(){
-    
+    //GET request of JSON objects
     $.ajax({
             type: "GET",
             url: "/load",
@@ -31,6 +41,7 @@ $(document).ready(function(){
 //User clicks on "Rock" button
 $(document).ready(function(){
     $(".rock").click(function(){
+        //GET request of JSON objects
         $.ajax({
             type: "GET",
             url: "/rock",
@@ -53,7 +64,7 @@ $(document).ready(function(){
                     var youtubeUrl = data[i].youtubeUrl; //YouTube URL
                     var type = data[i].type; //event type
                     
-                    
+                    //Basic information for events
                     var when = "<span class=when>When:</span> <span class=text>" + timeAndDate + "</span><br>";
                     var where = "<span class=where>Where:</span> <span class=text>" + place + "</span><br>";
                     var what = "<span class= what>What:</span> <span class=text>" + name + "</span><br>";
@@ -95,6 +106,7 @@ $(document).ready(function(){
 //User clicks on "Jazz" button
 $(document).ready(function(){
     $(".jazz").click(function(){
+        //GET request of JSON objects
         $.ajax({
             type: "GET",
             url: "/jazz",
@@ -117,6 +129,7 @@ $(document).ready(function(){
                     var youtubeUrl = data[i].youtubeUrl; //YouTube URL
                     var type = data[i].type; //event type
                     
+                    //Basic information for events
                     var when = "<span class=when>When:</span> <span class=text>" + timeAndDate + "</span><br>";
                     var where = "<span class=where>Where:</span> <span class=text>" + place + "</span><br>";
                     var what = "<span class= what>What:</span> <span class=text>" + name + "</span><br>";
@@ -161,6 +174,7 @@ $(document).ready(function(){
 //User clicks on "Blues" button
 $(document).ready(function(){
     $(".blues").click(function(){
+        //GET request of JSON objects
         $.ajax({
             type: "GET",
             url: "/blues",
@@ -183,6 +197,7 @@ $(document).ready(function(){
                     var youtubeUrl = data[i].youtubeUrl; //YouTube URL
                     var type = data[i].type; //event type
                     
+                    //Basic information for events
                     var when = "<span class=when>When:</span> <span class=text>" + timeAndDate + "</span><br>";
                     var where = "<span class=where>Where:</span> <span class=text>" + place + "</span><br>";
                     var what = "<span class= what>What:</span> <span class=text>" + name + "</span><br>";
@@ -226,6 +241,7 @@ $(document).ready(function(){
 //User clicks on "Food" button
 $(document).ready(function(){
     $(".food").click(function(){
+        //GET request of JSON objects
         $.ajax({
             type: "GET",
             url: "/food",
@@ -248,6 +264,7 @@ $(document).ready(function(){
                     var youtubeUrl = data[i].youtubeUrl; //YouTube URL
                     var type = data[i].type; //event type
                     
+                    //Basic information for events
                     var when = "<span class=when>When:</span> <span class=text>" + timeAndDate + "</span><br>";
                     var where = "<span class=where>Where:</span> <span class=text>" + place + "</span><br>";
                     var what = "<span class= what>What:</span> <span class=text>" + name + "</span><br>";
@@ -289,6 +306,7 @@ $(document).ready(function(){
 //User clicks on "Art Festivities" button
 $(document).ready(function(){
     $(".art_festivities").click(function(){
+        //GET request of JSON objects
         $.ajax({
             type: "GET",
             url: "/art_festivities",
@@ -311,6 +329,7 @@ $(document).ready(function(){
                     var youtubeUrl = data[i].youtubeUrl; //YouTube URL
                     var type = data[i].type; //event type
                     
+                    //Basic information for events
                     var when = "<span class=when>When:</span> <span class=text>" + timeAndDate + "</span><br>";
                     var where = "<span class=where>Where:</span> <span class=text>" + place + "</span><br>";
                     var what = "<span class= what>What:</span> <span class=text>" + name + "</span><br>";
@@ -354,6 +373,7 @@ $(document).ready(function(){
 //User clicks on "Misc" button
 $(document).ready(function(){
     $(".misc").click(function(){
+        //GET request of JSON objects
         $.ajax({
             type: "GET",
             url: "/misc",
@@ -376,6 +396,7 @@ $(document).ready(function(){
                     var youtubeUrl = data[i].youtubeUrl; //YouTube URL
                     var type = data[i].type; //event type
                     
+                    //Basic information for events
                     var when = "<span class=when>When:</span> <span class=text>" + timeAndDate + "</span><br>";
                     var where = "<span class=where>Where:</span> <span class=text>" + place + "</span><br>";
                     var what = "<span class= what>What:</span> <span class=text>" + name + "</span><br>";
@@ -419,6 +440,7 @@ $(document).ready(function(){
 //User clicks on "All Events" button
 $(document).ready(function(){
     $(".all_events").click(function(){
+        //GET request of JSON objects
         $.ajax({
             type: "GET",
             url: "/all_events",
@@ -441,6 +463,7 @@ $(document).ready(function(){
                     var youtubeUrl = data[i].youtubeUrl; //YouTube URL
                     var type = data[i].type; //event type
                     
+                    //Basic information for events
                     var when = "<span class=when>When:</span> <span class=text>" + timeAndDate + "</span><br>";
                     var where = "<span class=where>Where:</span> <span class=text>" + place + "</span><br>";
                     var what = "<span class= what>What:</span> <span class=text>" + name + "</span><br>";
@@ -492,7 +515,7 @@ $(document).ready(function(){
                 
             return;
         }
-        
+        //GET request of JSON objects
         $.ajax({
             type: "GET",
             url: "/view_schedule",
@@ -548,7 +571,7 @@ $(document).ready(function(){
                     var youtubeUrl = JSON.stringify(temp.youtubeUrl).replace(new RegExp("\"","gm"),""); //YouTube URL
                     var type = JSON.stringify(temp.eventType).replace(new RegExp("\"","gm"),""); //event type
 
-                    
+                    //Basic information for events
                     var when = "<span class=when>When:</span> <span class=text>" + timeAndDate + "</span><br>";
                     var where = "<span class=where>Where:</span> <span class=text>" + place + "</span><br>";
                     var what = "<span class= what>What:</span> <span class=text>" + name + "</span><br>";
@@ -646,6 +669,7 @@ $(document).ready(function(){
                             var youtubeUrl = data[i].youtubeUrl; //YouTube URL
                             var type = data[i].type; //event type
                     
+                            //Basic information for events
                             var when = "<span class=when>When:</span> <span class=text>" + timeAndDate + "</span><br>";
                             var where = "<span class=where>Where:</span> <span class=text>" + place + "</span><br>";
                             var what = "<span class= what>What:</span> <span class=text>" + name + "</span><br>";
@@ -883,6 +907,7 @@ $(document).on('click', '#delete_option', function(){
                 var youtubeUrl = data[i].youtubeUrl; //YouTube URL
                 var type = data[i].type; //event type
 
+                //Basic information for events
                 var when = "<span class=when>When:</span> <span class=text>" + timeAndDate + "</span><br>";
                 var where = "<span class=where>Where:</span> <span class=text>" + place + "</span><br>";
                 var what = "<span class= what>What:</span> <span class=text>" + name + "</span><br>";
