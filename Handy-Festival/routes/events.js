@@ -1,7 +1,12 @@
+/*
+This file is used to connect to the MongoDB database.
+The database is queried to retrieve, insert, and delete events.
+*/
+
 const express = require('express');
 const readXlsxFile = require('read-excel-file/node');
 const bcrypt = require('bcrypt');
-const router = express.Router();
+const router = new express.Router();
 const saltRounds = 10;
 
 var MongoClient = require('mongodb').MongoClient;
@@ -34,6 +39,7 @@ router.get('/insert', (req, res, next) => {
   
         var dbo = db.db("handy");
   
+        //List of events
         var myobj = [
             { name: 'Movie: St. Louis Blues', type: 'Jazz', when: 'Friday July 21, 10am', where: 'Alabama Music Hall of Fame Lobby, Tuscumbia'},
             { name: 'Courtin the Blues Parade', type: 'Jazz', when: 'Friday July 21, 7pm', where: 'Court Street, Florence'},
@@ -73,7 +79,7 @@ router.get('/insert', (req, res, next) => {
 });
 
 
-
+//Query database for rock events
 router.get('/rock', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
@@ -98,7 +104,7 @@ router.get('/rock', (req, res, next) => {
     }); 
 });
 
-
+//Query database for jazz events
 router.get('/jazz', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
@@ -117,6 +123,7 @@ router.get('/jazz', (req, res, next) => {
     }); 
 });
 
+//Query database for blues events
 router.get('/blues', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
@@ -135,6 +142,7 @@ router.get('/blues', (req, res, next) => {
     }); 
 });
 
+//Query database for food
 router.get('/food', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
@@ -153,6 +161,7 @@ router.get('/food', (req, res, next) => {
     }); 
 });
 
+//Query database for art events
 router.get('/art_festivities', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
@@ -171,7 +180,7 @@ router.get('/art_festivities', (req, res, next) => {
     }); 
 });
 
-
+//Query database for other events
 router.get('/misc', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
@@ -190,7 +199,7 @@ router.get('/misc', (req, res, next) => {
     }); 
 });
 
-
+//Get all events
 router.get('/all_events', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
@@ -209,6 +218,7 @@ router.get('/all_events', (req, res, next) => {
     }); 
 });
 
+//Query database for a logged-in user's personal schedule
 router.get('/view_schedule', (req, res, next) => {
     
     
@@ -236,7 +246,7 @@ router.get('/view_schedule', (req, res, next) => {
     }); 
 });
 
-
+//Administrators can delete events - lists events to delete
 router.get('/admin/delete_page', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
@@ -255,6 +265,7 @@ router.get('/admin/delete_page', (req, res, next) => {
     }); 
 });
 
+//Queries for search text
 router.get('/search', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
@@ -294,6 +305,7 @@ router.get('/search/:name/:type', (req, res, next) => {
     });
 });
 
+//Admin login page
 router.post('/admin/signin', (req, res, next) => {
     
     if(req.session.username){
@@ -350,6 +362,7 @@ router.post('/admin/signin', (req, res, next) => {
     });
 });
 
+//Insertion of new event by administrator
 router.post('/admin/insert', (req, res, next) => {
     
     if(!req.session.admin_username || !req.session.admin_password){
@@ -385,7 +398,7 @@ router.post('/admin/insert', (req, res, next) => {
     });
 });
 
-
+//User login
 router.post('/user/signin', (req, res, next) => {
     
     if(req.session.admin_username){
@@ -444,7 +457,7 @@ router.post('/user/signin', (req, res, next) => {
     });
 });
 
-
+//adds one to personal schedule
 router.post('/user/add_to_schedule', (req, res, next) => {
     
     if(!req.session.username || !req.session.password){
@@ -484,7 +497,7 @@ router.post('/user/add_to_schedule', (req, res, next) => {
     });
 });
 
-
+//deletes one from user schedule
 router.post('/user/remove_from_schedule', (req, res, next) => {
     
     if(!req.session.username || !req.session.password){
@@ -524,7 +537,7 @@ router.post('/user/remove_from_schedule', (req, res, next) => {
     });
 });
 
-
+//Actually allows admin to delete one event
 router.post('/admin/delete_event', (req, res, next) => {
     
     if(!req.session.admin_username || !req.session.admin_password){
@@ -564,7 +577,7 @@ router.post('/admin/delete_event', (req, res, next) => {
     });
 });
 
-
+//Handles registration info
 router.post('/user/signup', (req, res, next) => {
     
     if(req.session.admin_username){
@@ -615,7 +628,7 @@ router.post('/user/signup', (req, res, next) => {
     });
 });
 
-
+//Accepts uploaded Excel file with events
 router.post('/upload', function(req, res) {
   
     let excelFile;
@@ -645,7 +658,7 @@ router.post('/upload', function(req, res) {
     });
 });
 
-
+//Parses previously uploaded Excel, inserts into DB
 router.get('/read', function(req, res) {
     
     if(!req.session.admin_username || !req.session.admin_password){
