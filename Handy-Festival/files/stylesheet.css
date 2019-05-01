@@ -315,9 +315,18 @@ body{
     background-color: #00264def;
 }
 
+#logout {
+    display: none;
+    background-color: #00264def;
+}
+
 #read_file {
     display: none;
     background-color: #00264def;
+}
+
+##welcome_admin {
+    color: black;
 }
 
 .moreInfo {
