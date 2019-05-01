@@ -729,7 +729,6 @@ router.get('/read', function(req, res) {
 });
 
 
-
 router.get('/logout', (req, res, next) => {
 
     
@@ -738,6 +737,5 @@ router.get('/logout', (req, res, next) => {
     res.json("done");
     return;
 });
-
 
 module.exports = router;

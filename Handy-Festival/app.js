@@ -26,6 +26,9 @@ app.use(fileUpload());
 app.use(bodyParser.json());
 app.use(events);
 
+app.get('/', function(err, req, res, next){
+    
+});
 
 server.listen(process.env.PORT || 4500, process.env.IP || "0.0.0.0", function(){
   var addr = server.address();
