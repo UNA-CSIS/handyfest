@@ -595,6 +595,8 @@ $(document).on('click', '.back', function(){
     $(".events_container").hide();
     $(".upload_file").hide();
     $("#read_file").hide();
+    $("#logout").hide();
+    $("#welcome_user").empty(); 
     $(".main_container").show();
 });
 
@@ -736,6 +738,8 @@ $(document).ready(function(){
             
             $("#welcome_admin").empty();
             
+            $("#logout").show();
+            
             $("#welcome_admin").append("Welcome " + admin_username);
             
             $("#admin_options").css("display", "flex");
@@ -811,13 +815,26 @@ $(document).on('click', '#admin_submit_button', function(){
             else if (str === "true"){
                 admin_username = $("#admin_username").val();
                 
+                $(".events_container").empty();
+                $(".events_container").show();
+
+                var back = "<div class=back>Back</div>";
+
+                $(".events_container").append(back);
+
+                $(".back").addClass("button");          
+                
                 $(".user_input").hide();
 
                 $("#welcome_admin").empty();
+                
+                $(".instructions").empty();
+                
+                $("#logout").show();
             
                 $("#welcome_admin").append("Welcome " + admin_username);
             
-                $("#admin_options").css("display", "flex");              
+                $("#admin_options").css("display", "flex");            
             }
             
             else if ( str === "wrong password"){
@@ -1004,6 +1021,7 @@ $(document).ready(function(){
             $("#users_option").css("display", "flex");
         } else {
             $(".events_container").append("<div class=instructions>You are signed in</div>")
+            $("#logout").show();
         }
     });
 });
@@ -1339,8 +1357,7 @@ $(document).on('click', '.removeFromSchedule', function(event){
 // Clicked the "Delete Event" button
 $(document).on('click', '.deleteEvent', function(event){  
     
-//    alert($(event.target).data("time"));
-    
+  
     let event_what = $(event.target).data("name");
     let event_time = $(event.target).data("time");
     let event_place = $(event.target).data("place");
@@ -1463,4 +1480,31 @@ $(document).on('click', '#read_file', function(){
         
     });
 });
+
+
+$(document).on('click', '#logout', function(){ 
+    
+    if(admin_username === " " && user_username === " "){
+    
+        $( ".back" ).trigger( "click" );
+        return;
+    }
+    
+    $.ajax({
+        type: "GET",
+        url: "/logout",
+        dataType: "json"
+    }).done (function (data) {
+        
+        admin_username = " ";
+        user_username = " ";
+        
+        $(".back").trigger( "click" );
+
+        $("#welcome_user").empty();  
+        $("#welcome_user").append("You signed out");
+    });
+});
+
+
 

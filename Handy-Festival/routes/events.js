@@ -1,7 +1,12 @@
+/*
+This file is used to connect to the MongoDB database.
+The database is queried to retrieve, insert, and delete events.
+*/
+
 const express = require('express');
 const readXlsxFile = require('read-excel-file/node');
 const bcrypt = require('bcrypt');
-const router = express.Router();
+const router = new express.Router();
 const saltRounds = 10;
 
 var MongoClient = require('mongodb').MongoClient;
@@ -30,10 +35,11 @@ router.get('/load', (req, res, next) => {
 router.get('/insert', (req, res, next) => {
 
     MongoClient.connect(url, function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
   
         var dbo = db.db("handy");
   
+        //List of events
         var myobj = [
             { name: 'Movie: St. Louis Blues', type: 'Jazz', when: 'Friday July 21, 10am', where: 'Alabama Music Hall of Fame Lobby, Tuscumbia'},
             { name: 'Courtin the Blues Parade', type: 'Jazz', when: 'Friday July 21, 7pm', where: 'Court Street, Florence'},
@@ -64,7 +70,7 @@ router.get('/insert', (req, res, next) => {
   
         dbo.collection("events").insertMany(myobj, function(err, res) {
         
-            if (err) throw err;
+            if (err){             next('Something went wrong');             return;         };
             db.close();
         });
         
@@ -73,17 +79,23 @@ router.get('/insert', (req, res, next) => {
 });
 
 
-
+//Query database for rock events
 router.get('/rock', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){
+            next('Something went wrong');
+            return;
+        } 
         
         var dbo = db.db("handy");
         
         dbo.collection("events").find({"type": "Rock" }, { projection: { _id: 0} }).toArray(function(err, result) {
     
-            if (err) throw err;
+            if (err){
+                next('Something went wrong');
+                return;         
+            };
             
             res.json(result);
             db.close();
@@ -92,17 +104,17 @@ router.get('/rock', (req, res, next) => {
     }); 
 });
 
-
+//Query database for jazz events
 router.get('/jazz', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         
         dbo.collection("events").find({"type": "Jazz" }, { projection: { _id: 0} }).toArray(function(err, result) {
     
-            if (err) throw err;
+            if (err){             next('Something went wrong');             return;         };
       
             res.json(result);
             db.close();
@@ -111,16 +123,17 @@ router.get('/jazz', (req, res, next) => {
     }); 
 });
 
+//Query database for blues events
 router.get('/blues', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         
         dbo.collection("events").find({"type": "Blues" }, { projection: { _id: 0} }).toArray(function(err, result) {
     
-            if (err) throw err;
+            if (err){             next('Something went wrong');             return;         };
 
             res.json(result);
             db.close();
@@ -129,16 +142,17 @@ router.get('/blues', (req, res, next) => {
     }); 
 });
 
+//Query database for food
 router.get('/food', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         
         dbo.collection("events").find({"type": "Food" }, { projection: { _id: 0} }).toArray(function(err, result) {
     
-            if (err) throw err;
+            if (err){             next('Something went wrong');             return;         };
 
             res.json(result);
             db.close();
@@ -147,16 +161,17 @@ router.get('/food', (req, res, next) => {
     }); 
 });
 
+//Query database for art events
 router.get('/art_festivities', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         
         dbo.collection("events").find({"type": "Art Festivities" }, { projection: { _id: 0} }).toArray(function(err, result) {
     
-            if (err) throw err;
+            if (err){             next('Something went wrong');             return;         };
 
             res.json(result);
             db.close();
@@ -165,17 +180,17 @@ router.get('/art_festivities', (req, res, next) => {
     }); 
 });
 
-
+//Query database for other events
 router.get('/misc', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         
         dbo.collection("events").find({"type": "Misc" }, { projection: { _id: 0} }).toArray(function(err, result) {
     
-            if (err) throw err;
+            if (err){             next('Something went wrong');             return;         };
             
             res.json(result);
             db.close();
@@ -184,17 +199,17 @@ router.get('/misc', (req, res, next) => {
     }); 
 });
 
-
+//Get all events
 router.get('/all_events', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         
         dbo.collection("events").find({}, { projection: { _id: 0} }).toArray(function(err, result) {
     
-            if (err) throw err;
+            if (err){             next('Something went wrong');             return;         };
 
             res.json(result);
             db.close();
@@ -203,6 +218,7 @@ router.get('/all_events', (req, res, next) => {
     }); 
 });
 
+//Query database for a logged-in user's personal schedule
 router.get('/view_schedule', (req, res, next) => {
     
     
@@ -212,7 +228,7 @@ router.get('/view_schedule', (req, res, next) => {
     }
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         
@@ -221,7 +237,7 @@ router.get('/view_schedule', (req, res, next) => {
         
         dbo.collection("users").find({"username": name, "password": pass}, { projection: { _id: 0, userEvents: 1} }).toArray(function(err, result) {
     
-            if (err) throw err;
+            if (err){             next('Something went wrong');             return;         };
 
             res.json(result);
             db.close();
@@ -230,17 +246,17 @@ router.get('/view_schedule', (req, res, next) => {
     }); 
 });
 
-
+//Administrators can delete events - lists events to delete
 router.get('/admin/delete_page', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         
         dbo.collection("events").find({}, { projection: { _id: 0} }).toArray(function(err, result) {
     
-            if (err) throw err;
+            if (err){             next('Something went wrong');             return;         };
 
             res.json(result);
             db.close();
@@ -249,16 +265,17 @@ router.get('/admin/delete_page', (req, res, next) => {
     }); 
 });
 
+//Queries for search text
 router.get('/search', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         
         dbo.collection("events").find({}, { projection: { _id: 0, name:1,type:1} }).toArray(function(err, result) {
     
-            if (err) throw err;
+            if (err){             next('Something went wrong');             return;         };
 
             res.json(result);
             db.close();
@@ -271,7 +288,7 @@ router.get('/search', (req, res, next) => {
 router.get('/search/:name/:type', (req, res, next) => {
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         var strName = `${req.params.name}`;
@@ -279,7 +296,7 @@ router.get('/search/:name/:type', (req, res, next) => {
         
         dbo.collection("events").find({"name": strName , "type": strType}, { projection: { _id: 0} }).toArray(function(err, result) {
     
-            if (err) throw err;
+            if (err){             next('Something went wrong');             return;         };
 
             res.json(result);
             db.close();
@@ -288,6 +305,7 @@ router.get('/search/:name/:type', (req, res, next) => {
     });
 });
 
+//Admin login page
 router.post('/admin/signin', (req, res, next) => {
     
     if(req.session.username){
@@ -296,7 +314,7 @@ router.post('/admin/signin', (req, res, next) => {
     }
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         var name = `${req.body.username}`;
@@ -311,7 +329,7 @@ router.post('/admin/signin', (req, res, next) => {
         
         dbo.collection("admin").find({"username": name }, { projection: { _id: 0} }).toArray(function(err, result) {
     
-            if (err) throw err;            
+            if (err){             next('Something went wrong');             return;         };            
 
             if(result.length > 0){
                 
@@ -319,7 +337,7 @@ router.post('/admin/signin', (req, res, next) => {
                 
                 bcrypt.compare(pass, hash, function(err, check) {
                     
-                    if (err) throw err;
+                    if (err){             next('Something went wrong');             return;         };
                     
                     if(check){
                         req.session.admin_username = result[0].username;
@@ -344,6 +362,7 @@ router.post('/admin/signin', (req, res, next) => {
     });
 });
 
+//Insertion of new event by administrator
 router.post('/admin/insert', (req, res, next) => {
     
     if(!req.session.admin_username || !req.session.admin_password){
@@ -353,7 +372,7 @@ router.post('/admin/insert', (req, res, next) => {
     
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         var eventName = `${req.body.event_name}`;
@@ -370,7 +389,7 @@ router.post('/admin/insert', (req, res, next) => {
         
         dbo.collection("events").insertOne(myObj, function(err, res) {
     
-            if (err) throw err;
+            if (err){             next('Something went wrong');             return;         };
 
             db.close();
         });
@@ -379,7 +398,7 @@ router.post('/admin/insert', (req, res, next) => {
     });
 });
 
-
+//User login
 router.post('/user/signin', (req, res, next) => {
     
     if(req.session.admin_username){
@@ -389,7 +408,7 @@ router.post('/user/signin', (req, res, next) => {
     
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         var name = `${req.body.username}`;
@@ -405,7 +424,7 @@ router.post('/user/signin', (req, res, next) => {
         
         dbo.collection("users").find({"username": name }, { projection: { _id: 0} }).toArray(function(err, result) {
     
-            if (err) throw err;            
+            if (err){             next('Something went wrong');             return;         };            
 
             if(result.length > 0){
                 
@@ -413,7 +432,7 @@ router.post('/user/signin', (req, res, next) => {
                 
                 bcrypt.compare(pass, hash, function(err, check) {
                     
-                    if (err) throw err;
+                    if (err){             next('Something went wrong');             return;         };
                     
                     if(check){
                         req.session.username = result[0].username;
@@ -438,7 +457,7 @@ router.post('/user/signin', (req, res, next) => {
     });
 });
 
-
+//adds one to personal schedule
 router.post('/user/add_to_schedule', (req, res, next) => {
     
     if(!req.session.username || !req.session.password){
@@ -448,7 +467,7 @@ router.post('/user/add_to_schedule', (req, res, next) => {
     
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         var eventName = `${req.body.event_name}`;
@@ -462,7 +481,7 @@ router.post('/user/add_to_schedule', (req, res, next) => {
         
         dbo.collection("users").updateOne({"username": name, "password": pass}, { $addToSet: {"userEvents": {eventName, eventWhen, eventWhere, youtubeUrl, eventType} } }, function(err, check) {
     
-            if (err) throw err;
+            if (err){             next('Something went wrong');             return;         };
 
             if(check.result.nModified > 0){
                 
@@ -478,7 +497,7 @@ router.post('/user/add_to_schedule', (req, res, next) => {
     });
 });
 
-
+//deletes one from user schedule
 router.post('/user/remove_from_schedule', (req, res, next) => {
     
     if(!req.session.username || !req.session.password){
@@ -488,7 +507,7 @@ router.post('/user/remove_from_schedule', (req, res, next) => {
     
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         var eventName = `${req.body.event_name}`;
@@ -502,7 +521,7 @@ router.post('/user/remove_from_schedule', (req, res, next) => {
 
         dbo.collection("users").updateOne({"username": name, "password": pass}, { $pull: {"userEvents":  {eventName: eventName, eventWhen: eventWhen, eventWhere: eventWhere, youtubeUrl: youtubeUrl, eventType: eventType } } }, function(err, check) {
     
-            if (err) throw err;
+            if (err){             next('Something went wrong');             return;         };
 
             if(check.result.nModified > 0){
                 
@@ -518,7 +537,7 @@ router.post('/user/remove_from_schedule', (req, res, next) => {
     });
 });
 
-
+//Actually allows admin to delete one event
 router.post('/admin/delete_event', (req, res, next) => {
     
     if(!req.session.admin_username || !req.session.admin_password){
@@ -528,7 +547,7 @@ router.post('/admin/delete_event', (req, res, next) => {
     
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         var eventName = `${req.body.event_name}`;
@@ -542,7 +561,7 @@ router.post('/admin/delete_event', (req, res, next) => {
 
         dbo.collection("events").deleteOne({name: eventName, type: eventType, when: eventWhen, where: eventWhere}, function(err, check) {
     
-            if (err) throw err;
+            if (err){             next('Something went wrong');             return;         };
 
             if(check.deletedCount > 0){
                 
@@ -558,7 +577,7 @@ router.post('/admin/delete_event', (req, res, next) => {
     });
 });
 
-
+//Handles registration info
 router.post('/user/signup', (req, res, next) => {
     
     if(req.session.admin_username){
@@ -567,7 +586,7 @@ router.post('/user/signup', (req, res, next) => {
     }
     
     MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
-        if (err) throw err;
+        if (err){             next('Something went wrong');             return;         };
         
         var dbo = db.db("handy");
         var name = `${req.body.username}`;
@@ -595,7 +614,7 @@ router.post('/user/signup', (req, res, next) => {
 
             dbo.collection("users").update({username: name}, { "$setOnInsert": {username: name, password: pass}} , {upsert:true}, function(err, result) {
 
-                if (err) throw err;
+                if (err){             next('Something went wrong');             return;         };
 
                 if(result.result.upserted){
                     res.send("true");
@@ -609,7 +628,7 @@ router.post('/user/signup', (req, res, next) => {
     });
 });
 
-
+//Accepts uploaded Excel file with events
 router.post('/upload', function(req, res) {
   
     let excelFile;
@@ -639,7 +658,7 @@ router.post('/upload', function(req, res) {
     });
 });
 
-
+//Parses previously uploaded Excel, inserts into DB
 router.get('/read', function(req, res) {
     
     if(!req.session.admin_username || !req.session.admin_password){
@@ -657,7 +676,7 @@ router.get('/read', function(req, res) {
         
         MongoClient.connect(url, { useNewUrlParser: true } ,function(err, db) {
             
-            if (err) throw err;
+            if (err){             next('Something went wrong');             return;         };
         
             var dbo = db.db("handy");
         
@@ -694,7 +713,7 @@ router.get('/read', function(req, res) {
                 
                 dbo.collection("events").update({name: eventName, type: eventType, when: eventWhen, where: eventWhere, youtubeUrl: eventUrl}, { "$setOnInsert": {name: eventName, type: eventType, when: eventWhen, where: eventWhere, youtubeUrl: eventUrl}} , {upsert:true}, function(err, result){
                 
-                    if (err) throw err;
+                    if (err){             next('Something went wrong');             return;         };
 
                     db.close();
                 }); 
@@ -709,5 +728,18 @@ router.get('/read', function(req, res) {
     });   
 });
 
+
+router.get('/logout', (req, res, next) => {
+    
+//    if (!(req.session.admin_username) || !(req.session.username)){
+//        res.send('Something went wrong');
+//        return;
+//    } 
+    
+    req.session.destroy();
+    
+    res.json("done");
+    return;
+});
 
 module.exports = router;
